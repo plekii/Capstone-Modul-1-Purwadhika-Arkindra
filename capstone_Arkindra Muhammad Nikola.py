@@ -204,7 +204,8 @@ def updateKaryawan():
             
 def restore():
     if len(bin) !=0:
-        print (f'\nbin:\n{tabulate(sorted(bin, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty')}') 
+        table = tabulate(sorted(bin, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty')
+        print (f'\nbin:\n{table}') 
         while True:
             inputan = input('anda ingin restore data?(ya/tidak): ').lower().replace(" ","")
             try:
