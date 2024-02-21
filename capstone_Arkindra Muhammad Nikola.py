@@ -47,7 +47,7 @@ def cekAlpha2(kata):
             break
         else:
             print('\nmasukkan hanya alphabet (tanpa angka maupun simbol)')
-                
+            break    
 def cekAlpha():
     while True:
         karyawan_baru = input('Masukkan nama karyawan: ').capitalize()
