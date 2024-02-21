@@ -29,7 +29,10 @@ def saring():
                     for i in range(len(karyawan)):
                         if karyawan[i][tanya].lower().replace(" ","") == tanya2:
                             data_sementara.append(karyawan[i])
-                    print('\n',tabulate(data_sementara, headers = 'keys', tablefmt='pretty'))
+                    if len(data_sementara)!= 0:
+                        print('\n',tabulate(data_sementara, headers = 'keys', tablefmt='pretty'))
+                    else:
+                        print('\nData tidak tersedia')
                     break
                 else:
                     print('\nfilter yang anda masukkan tidak tersedia')  
@@ -40,6 +43,18 @@ def saring():
         except:
             print ('\ninput tidak valid\n')
             break
+        
+def cekAlpha3(kata):
+    while True:
+        hasil = input(f'Masukkan {kata} karyawan: ').capitalize()
+        try :
+            if hasil.replace(" ","").isalpha():
+                return hasil
+            else:
+                 print('\nmasukkan hanya alphabet (tanpa angka maupun simbol)')
+        except:
+            print('\ninput tidak valid\n')
+
 
 def cekAlpha2(kata):
     while True:
@@ -47,18 +62,7 @@ def cekAlpha2(kata):
             break
         else:
             print('\nmasukkan hanya alphabet (tanpa angka maupun simbol)')
-            break    
-def cekAlpha():
-    while True:
-        karyawan_baru = input('Masukkan nama karyawan: ').capitalize()
-        try :
-            if karyawan_baru.replace(" ","").isalpha():
-                return karyawan_baru
-            else:
-                 print('\nmasukkan hanya alphabet (tanpa angka maupun simbol)')
-        except:
-            print('\ninput tidak valid\n')
-            
+            break         
 
 def kapital(kata):
     kata = kata.split()
@@ -106,14 +110,13 @@ def listKaryawan():
 
 def tambahKaryawan():
     print('\n',tabulate(sorted(karyawan, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty'))
-    nama = kapital(cekAlpha())
+    nama = kapital(cekAlpha3('nama'))
     
     global id
     id += 1
     kode_baru = nama[0] + nama[1] + nama[-2] + nama[-1] + str(id).zfill(4)
-    divisi_baru = input('masukkan divisi karyawan: ').upper()
-    
-    domisili_baru = input('masukkan domisili karyawan: ')
+    divisi_baru = cekAlpha3('divisi').upper()
+    domisili_baru = cekAlpha3('domisili')
     dom = kapital(domisili_baru)
     
     email_baru = email()
@@ -178,7 +181,7 @@ def updateKaryawan():
                 cekAlpha2(field)
                 if field == 'divisi' or field == 'domisili':
                     print (f'\n{field} lama {kode} adalah {karyawan[i][field]}')
-                    new_value = input(f'masukkan {field} baru: ')
+                    new_value = cekAlpha3(field)
                     if field == 'divisi':
                         cekAlpha2(new_value)
                         new_value = new_value.upper()
@@ -200,34 +203,37 @@ def updateKaryawan():
             print ('\ninput tidak valid')
             
 def restore():
-    print (f'\nbin:\n{tabulate(sorted(bin, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty')}') 
-    while True:
-        inputan = input('anda ingin restore data?(ya/tidak): ').lower().replace(" ","")
-        try:
-            if inputan == 'ya':
-                isSuccess = True
-                while isSuccess:
-                    print (f'\npilihan kode:\n {unik(bin, "kode")}')
-                    balik = input('masukkan kode yang ingin anda restore: ').upper().replace(" ","")
-                    for i in range(len(bin)):
-                        if bin[i]['kode'] != balik:
-                            if i == len(bin)-1:
-                                print(f'\n{balik} tidak ditemukan')
-                        elif bin[i]['kode'] == balik:
-                            print(f'{balik} berhasil direstore')
-                            karyawan.append(bin[i])
-                            del bin[i]
-                            isSuccess = False
-                            break
-                print('\n',tabulate(sorted(karyawan, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty'))
+    if len(bin) !=0:
+        print (f'\nbin:\n{tabulate(sorted(bin, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty')}') 
+        while True:
+            inputan = input('anda ingin restore data?(ya/tidak): ').lower().replace(" ","")
+            try:
+                if inputan == 'ya':
+                    isSuccess = True
+                    while isSuccess:
+                        print (f'\npilihan kode:\n {unik(bin, "kode")}')
+                        balik = input('masukkan kode yang ingin anda restore: ').upper().replace(" ","")
+                        for i in range(len(bin)):
+                            if bin[i]['kode'] != balik:
+                                if i == len(bin)-1:
+                                    print(f'\n{balik} tidak ditemukan')
+                            elif bin[i]['kode'] == balik:
+                                print(f'{balik} berhasil direstore')
+                                karyawan.append(bin[i])
+                                del bin[i]
+                                isSuccess = False
+                                break
+                    print('\n',tabulate(sorted(karyawan, key=lambda x: x['kode'][-4:]), headers = 'keys', tablefmt='pretty'))
+                    break
+                elif inputan == 'tidak':
+                    break
+                else:
+                    print('\nmasukkan hanya ya/tidak')
+            except:
+                print('\ninput anda tidak valid')
                 break
-            elif inputan == 'tidak':
-                break
-            else:
-                print('\nmasukkan hanya ya/tidak')
-        except:
-            print('\ninput anda tidak valid')
-            break
+    else:
+        print('\nTidak ada data yang dapat direstore (bin kosong)')
                      
 
 def exit():
